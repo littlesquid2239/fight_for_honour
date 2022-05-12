@@ -1,0 +1,10 @@
+name: Figt_for_honour
+version: '${project.version}'
+main: me.a_littlesquid.figt_for_honour.Figt_for_honour
+api-version: 1.16
+authors: [ a_littlesquid ]
+description: cities compete for flags for glory
+depend: [Residence]
+commands:
+  ffh:
+    description: fight for honour
