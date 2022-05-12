@@ -4,12 +4,10 @@ import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import me.a_littlesquid.figt_for_honour.Figt_for_honour;
 import me.a_littlesquid.figt_for_honour.FileManager;
+import me.a_littlesquid.figt_for_honour.TownData;
 import me.a_littlesquid.figt_for_honour.guilist.townslist;
 import me.a_littlesquid.figt_for_honour.task.count;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -78,11 +76,18 @@ public class ffh implements CommandExecutor {
             String worldname=world.getName();
             String playername=player.getDisplayName();
             if(thenextcommand.equalsIgnoreCase("fight")) {
-                data.set("towns." + townname + ".fighting", "true");
-                FileManager.reloadfile(data, filedata);
-                plugin = Figt_for_honour.getInstance();
-                count task = new count(player,townname);
-                task.runTaskAsynchronously(plugin);
+                String enermy=data.getString("towns."+townname+".owner");
+                Player enermyplayer= Bukkit.getPlayer(enermy);
+                if(enermyplayer.isOnline()){
+                    data.set("towns." + townname + ".fighting", "true");
+                    FileManager.reloadfile(data, filedata);
+                    plugin = Figt_for_honour.getInstance();
+                    count task1 = new count(player,townname);
+                    task1.runTaskAsynchronously(plugin);
+                }else {
+                    sender.sendMessage(prefix+ChatColor.RED+"该玩家未上线");
+                }
+
 
             }
             if (thenextcommand.equalsIgnoreCase("create")) {
