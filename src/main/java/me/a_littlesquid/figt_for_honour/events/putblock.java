@@ -2,7 +2,6 @@ package me.a_littlesquid.figt_for_honour.events;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import me.a_littlesquid.figt_for_honour.FileManager;
 import me.a_littlesquid.figt_for_honour.TownData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -32,18 +31,18 @@ public class putblock implements Listener {
     public  void onPutBlock(BlockPlaceEvent event){
         File filedata=new File(me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class).getDataFolder(),"data.yml");
         FileConfiguration data= YamlConfiguration.loadConfiguration(filedata);
+        TownData townData=new TownData(data,filedata);
         Block block=event.getBlock();
         Player player=event.getPlayer();
         String playername=player.getDisplayName();
         Material blockmaterial=block.getType();
-        TownData townData=new TownData();
+        Location loc = event.getBlock().getLocation();
+        int locx=loc.getBlockX();
+        int locy=loc.getBlockY();
+        int locz=loc.getBlockZ();
+        ClaimedResidence res = this.residence.getResidenceManager().getByLoc(loc);
         if (blockmaterial.equals(Material.REDSTONE_BLOCK)){
             //如果检测到的数据为红石
-            Location loc = event.getBlock().getLocation();
-            int locx=loc.getBlockX();
-            int locy=loc.getBlockY();
-            int locz=loc.getBlockZ();
-            ClaimedResidence res = this.residence.getResidenceManager().getByLoc(loc);
             if(res!=null) {
                 //如果该位置有领地
                 String thetownname=res.getResidenceName();
@@ -58,23 +57,43 @@ public class putblock implements Listener {
                                 Set<String> blcoklocation=configurationSection1.getKeys(false);
                                 Block bannerblock=block.getRelative(BlockFace.UP);
                                 if(blcoklocation.size()==1){
-                                        townData.setLocation(town,1,locx,locy,locz);
+                                        data.set("towns."+town+".location.block1.x",locx);
+                                        data.set("towns."+town+".location.block1.y",locy);
+                                        data.set("towns."+town+".location.block1.z",locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==2){
-                                        townData.setLocation(town,2,locx,locy,locz);
+                                        data.set("towns."+town+".location.block2.x",locx);
+                                        data.set("towns."+town+".location.block2.y",locy);
+                                        data.set("towns."+town+".location.block2.z",locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==3){
-                                        townData.setLocation(town,3,locx,locy,locz);
+                                        data.set("towns."+town+".location.block3.x",locx);
+                                        data.set("towns."+town+".location.block3.y",locy);
+                                        data.set("towns."+town+".location.block3.z",locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==4){
-                                        townData.setLocation(town,4,locx,locy,locz);
+                                        data.set("towns."+town+".location.block4.x",locx);
+                                        data.set("towns."+town+".location.block4.y",locy);
+                                        data.set("towns."+town+".location.block4.z",locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                         player.sendTitle(ChatColor.GREEN+"创建成功","领地名称："+ChatColor.GOLD+town,10,70,20);
                                     }
-                                FileManager.reloadfile(data,filedata);
+
+                                try {
+                                    data.save(filedata);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                try {
+                                    data.load(filedata);
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                } catch (InvalidConfigurationException e) {
+                                    throw new RuntimeException(e);
+                                }
                             }
                             else{
                                 player.sendMessage(prefix+ChatColor.RED+"这个领地并不属于你");
@@ -91,6 +110,16 @@ public class putblock implements Listener {
                 if(itemname.equalsIgnoreCase("城池标志块")){
                     event.setCancelled(true);
                     player.sendMessage(prefix+ChatColor.RED+"标志块无法放在领地外");
+                }
+            }
+        }
+        else{
+            if (res!=null){
+                if(!res.isOwner(player)){
+                    String townname=townData.gettownnameByres(res.getResidenceName());
+                    if (!townData.isFighting(townname)){
+                        event.setCancelled(true);
+                    }
                 }
             }
         }

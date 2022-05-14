@@ -1,5 +1,7 @@
 package me.a_littlesquid.figt_for_honour.task;
 
+import me.a_littlesquid.figt_for_honour.Figt_for_honour;
+import me.a_littlesquid.figt_for_honour.FileManager;
 import me.a_littlesquid.figt_for_honour.TownData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -15,6 +17,7 @@ public class count extends BukkitRunnable {
     private Player player;
     private String enermy;
     private String townname;
+    private Figt_for_honour plugin;
     public count(Player player,String townname,String enermy){
         this.player=player;
         this.townname=townname;
@@ -22,9 +25,10 @@ public class count extends BukkitRunnable {
     }
     @Override
     public void run(){
-        TownData townData=new TownData();
+
         File filedata=new File(me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class).getDataFolder(),"data.yml");
         FileConfiguration data= YamlConfiguration.loadConfiguration(filedata);
+        TownData townData=new TownData(data,filedata);
         player.sendTitle(ChatColor.RED+"宣战已经开始了！","拿起武器去争夺荣耀吧",10,70,20);
         try {
             Thread.sleep(60000);
@@ -32,7 +36,6 @@ public class count extends BukkitRunnable {
             throw new RuntimeException(e);
         }
         Location location1=townData.getBlockLocation(townname,1);
-
         Location location2=townData.getBlockLocation(townname,2);
         Location location3=townData.getBlockLocation(townname,3);
         Location location4=townData.getBlockLocation(townname,4);
@@ -40,52 +43,74 @@ public class count extends BukkitRunnable {
         Location location6=townData.getBlockLocation(enermy,2);
         Location location7=townData.getBlockLocation(enermy,3);
         Location location8=townData.getBlockLocation(enermy,4);
-        location1.setY(location1.getBlockY()+1);
         Block block1= location1.getBlock();
-        location2.setY(location2.getBlockY()+1);
         Block block2= location2.getBlock();
-        location3.setY(location3.getBlockY()+1);
         Block block3= location3.getBlock();
-        location4.setY(location4.getBlockY()+1);
         Block block4= location4.getBlock();
-        location5.setY(location5.getBlockY()+1);
         Block block5= location5.getBlock();
-        location6.setY(location6.getBlockY()+1);
         Block block6= location6.getBlock();
-        location7.setY(location7.getBlockY()+1);
         Block block7= location7.getBlock();
-        location8.setY(location8.getBlockY()+1);
         Block block8= location8.getBlock();
+        Block bannerblock1=block1.getRelative(BlockFace.UP);
+        Block bannerblock2=block2.getRelative(BlockFace.UP);
+        Block bannerblock3=block3.getRelative(BlockFace.UP);
+        Block bannerblock4=block4.getRelative(BlockFace.UP);
+        Block bannerblock5=block5.getRelative(BlockFace.UP);
+        Block bannerblock6=block6.getRelative(BlockFace.UP);
+        Block bannerblock7=block7.getRelative(BlockFace.UP);
+        Block bannerblock8=block8.getRelative(BlockFace.UP);
         int result1=4;
         int result2=4;
-        if (block1.isEmpty()){
+
+        if (bannerblock1.isEmpty()){
+
             result1=result1-1;
         }
+        if (bannerblock2.isEmpty()){
 
-        if (block2.isEmpty()){
             result1=result1-1;
         }
+        if (bannerblock3.isEmpty()){
 
-        if (block3.isEmpty()){
             result1=result1-1;
         }
+        if (bannerblock4.isEmpty()){
 
-        if (block4.isEmpty()){
             result1=result1-1;
         }
+        if (bannerblock5.isEmpty()){
 
-        if (block5.isEmpty()){
             result2=result2-1;
         }
-        if (block6.isEmpty()){
+        if (bannerblock6.isEmpty()){
+
             result2=result2-1;
         }
-        if (block7.isEmpty()){
+        if (bannerblock7.isEmpty()){
+
             result2=result2-1;
         }
-        if (block8.isEmpty()){
+        if (bannerblock8.isEmpty()){
+
             result2=result2-1;
         }
+        plugin = Figt_for_honour.getInstance();
+        reborn task1=new reborn(bannerblock1);
+        reborn task2=new reborn(bannerblock2);
+        reborn task3=new reborn(bannerblock3);
+        reborn task4=new reborn(bannerblock4);
+        reborn task5=new reborn(bannerblock5);
+        reborn task6=new reborn(bannerblock6);
+        reborn task7=new reborn(bannerblock7);
+        reborn task8=new reborn(bannerblock8);
+        task1.runTask(plugin);
+        task2.runTask(plugin);
+        task3.runTask(plugin);
+        task4.runTask(plugin);
+        task5.runTask(plugin);
+        task6.runTask(plugin);
+        task7.runTask(plugin);
+        task8.runTask(plugin);
         if(result1<=2){
             if (result2<=2){
                 player.sendTitle(ChatColor.YELLOW+"宣战已经结束了！","你在战争中两败俱伤",10,70,20);
@@ -98,40 +123,9 @@ public class count extends BukkitRunnable {
             }else {
                 player.sendTitle(ChatColor.YELLOW+"宣战已经结束了！","双方在战争中并没有实质性的伤害",10,70,20);
             }
-            Block bannerblock1=block1.getRelative(BlockFace.UP);
-            Block bannerblock2=block2.getRelative(BlockFace.UP);
-            Block bannerblock3=block3.getRelative(BlockFace.UP);
-            Block bannerblock4=block4.getRelative(BlockFace.UP);
-            Block bannerblock5=block5.getRelative(BlockFace.UP);
-            Block bannerblock6=block6.getRelative(BlockFace.UP);
-            Block bannerblock7=block7.getRelative(BlockFace.UP);
-            Block bannerblock8=block8.getRelative(BlockFace.UP);
-            if (bannerblock1.isEmpty()){
-                bannerblock1.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock2.isEmpty()){
-                bannerblock2.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock3.isEmpty()){
-                bannerblock3.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock4.isEmpty()){
-                bannerblock4.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock5.isEmpty()){
-                bannerblock5.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock6.isEmpty()){
-                bannerblock6.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock7.isEmpty()){
-                bannerblock7.setType(Material.WHITE_BANNER);
-            }
-            if (bannerblock8.isEmpty()){
-                bannerblock8.setType(Material.WHITE_BANNER);
-            }
         }
-        townData.setFighting(townname,false);
-        townData.setFighting(enermy,false);
+        data.set("towns." + townname + ".fighting","false");
+        data.set("towns." + enermy + ".fighting","false");
+        FileManager.reloadfile(data,filedata);
     }
 }

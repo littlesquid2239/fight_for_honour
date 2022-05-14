@@ -1,5 +1,6 @@
 package me.a_littlesquid.figt_for_honour.guilist;
 
+import me.a_littlesquid.figt_for_honour.TownData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -130,8 +131,10 @@ public class townslist {
         player.openInventory(gui);
     }
     public static void maingui(Player player){
+
         File filedata=new File(me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class).getDataFolder(),"data.yml");
         FileConfiguration data= YamlConfiguration.loadConfiguration(filedata);
+        TownData townData=new TownData(data,filedata);
         Inventory gui = Bukkit.createInventory(null, 6 * 9, ChatColor.AQUA + "城池列表");
         ItemStack page= new ItemStack(Material.PAPER);
         ItemMeta pagemeta=page.getItemMeta();
@@ -165,8 +168,8 @@ public class townslist {
         int index=0;
         for(String townname:townslist){
             townmeta.setDisplayName(townname);
-            String owner=data.getString("towns."+townname+".owner");
-            String residencename=data.getString("towns."+townname+".residencename");
+            String owner=townData.getOwner(townname);
+            String residencename=townData.getResidencename(townname);
             List<String>  lore=new ArrayList<>();
             lore.add(ChatColor.GOLD+"君主:"+ChatColor.GREEN+owner);
             lore.add(ChatColor.GOLD+"所在领地:"+ChatColor.GREEN+residencename);

@@ -19,7 +19,7 @@ public final class Figt_for_honour extends JavaPlugin {
         instance=this;
         saveDefaultConfig();
         saveResource("data.yml",false);
-        //   保存文件
+        //保存文件
         getCommand("ffh").setExecutor(new ffh());
         //命令
         getServer().getPluginManager().registerEvents(new putblock(),this);

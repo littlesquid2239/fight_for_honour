@@ -6,7 +6,6 @@ import me.a_littlesquid.figt_for_honour.Figt_for_honour;
 import me.a_littlesquid.figt_for_honour.FileManager;
 import me.a_littlesquid.figt_for_honour.TownData;
 import me.a_littlesquid.figt_for_honour.guilist.townslist;
-import me.a_littlesquid.figt_for_honour.task.count;
 import me.a_littlesquid.figt_for_honour.task.meet;
 import me.a_littlesquid.figt_for_honour.utils.Prefix;
 import org.bukkit.*;
@@ -32,7 +31,6 @@ public class ffh implements CommandExecutor {
     private Residence residence = Residence.getInstance();
     public void getredstone(Inventory playerinvetory){
         //给玩家发标志块
-
         ItemStack itemstack = new ItemStack(Material.REDSTONE_BLOCK, 4);
         ItemMeta itemMeta=itemstack.getItemMeta();
         itemMeta.setDisplayName("城池标志块");
@@ -50,7 +48,7 @@ public class ffh implements CommandExecutor {
         Plugin config=me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class);
         File filedata=new File(me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class).getDataFolder(),"data.yml");
         FileConfiguration data= YamlConfiguration.loadConfiguration(filedata);
-        TownData townData=new TownData();
+        TownData townData=new TownData(data,filedata);
         Player player=(Player) sender;
         if (args.length == 0) {
             sender.sendMessage(ChatColor.AQUA + "——————" + ChatColor.GOLD + "欢迎使用城池争夺系统" + ChatColor.AQUA + "——————");
@@ -87,7 +85,7 @@ public class ffh implements CommandExecutor {
                 String owntownn=townData.gettownname(playername);
                 Player enermyplayer= Bukkit.getPlayer(enermy);
                 if(enermyplayer.isOnline()){
-                    townData.setFighting(owntownn,true);
+                    data.set("towns."+owntownn+".fighting","true");
                     FileManager.reloadfile(data, filedata);
                     plugin = Figt_for_honour.getInstance();
                     meet meet=new meet(player,owntownn,townname,enermyplayer);
