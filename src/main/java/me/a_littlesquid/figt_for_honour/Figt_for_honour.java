@@ -1,6 +1,7 @@
 package me.a_littlesquid.figt_for_honour;
 
 import me.a_littlesquid.figt_for_honour.command.ffh;
+import me.a_littlesquid.figt_for_honour.events.breakblock;
 import me.a_littlesquid.figt_for_honour.events.guiclick;
 import me.a_littlesquid.figt_for_honour.events.putblock;
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ public final class Figt_for_honour extends JavaPlugin {
         //命令
         getServer().getPluginManager().registerEvents(new putblock(),this);
         getServer().getPluginManager().registerEvents(new guiclick(),this);
+        getServer().getPluginManager().registerEvents(new breakblock(),this);
         //注册事件
         this.getLogger().info(ChatColor.AQUA+"---------------------");
         this.getLogger().info("插件名称："+ ChatColor.GOLD+"fight for honour");

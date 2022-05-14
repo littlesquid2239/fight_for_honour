@@ -2,6 +2,8 @@ package me.a_littlesquid.figt_for_honour.events;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import me.a_littlesquid.figt_for_honour.FileManager;
+import me.a_littlesquid.figt_for_honour.TownData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,6 +36,7 @@ public class putblock implements Listener {
         Player player=event.getPlayer();
         String playername=player.getDisplayName();
         Material blockmaterial=block.getType();
+        TownData townData=new TownData();
         if (blockmaterial.equals(Material.REDSTONE_BLOCK)){
             //如果检测到的数据为红石
             Location loc = event.getBlock().getLocation();
@@ -55,43 +58,23 @@ public class putblock implements Listener {
                                 Set<String> blcoklocation=configurationSection1.getKeys(false);
                                 Block bannerblock=block.getRelative(BlockFace.UP);
                                 if(blcoklocation.size()==1){
-                                        data.set("towns."+town+".location.block1.x",locx);
-                                        data.set("towns."+town+".location.block1.y",locy);
-                                        data.set("towns."+town+".location.block1.z",locz);
+                                        townData.setLocation(town,1,locx,locy,locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==2){
-                                        data.set("towns."+town+".location.block2.x",locx);
-                                        data.set("towns."+town+".location.block2.y",locy);
-                                        data.set("towns."+town+".location.block2.z",locz);
+                                        townData.setLocation(town,2,locx,locy,locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==3){
-                                        data.set("towns."+town+".location.block3.x",locx);
-                                        data.set("towns."+town+".location.block3.y",locy);
-                                        data.set("towns."+town+".location.block3.z",locz);
+                                        townData.setLocation(town,3,locx,locy,locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                     }
                                     if(blcoklocation.size()==4){
-                                        data.set("towns."+town+".location.block4.x",locx);
-                                        data.set("towns."+town+".location.block4.y",locy);
-                                        data.set("towns."+town+".location.block4.z",locz);
+                                        townData.setLocation(town,4,locx,locy,locz);
                                         bannerblock.setType(Material.WHITE_BANNER);
                                         player.sendTitle(ChatColor.GREEN+"创建成功","领地名称："+ChatColor.GOLD+town,10,70,20);
                                     }
-
-                                try {
-                                    data.save(filedata);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                try {
-                                    data.load(filedata);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                } catch (InvalidConfigurationException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                FileManager.reloadfile(data,filedata);
                             }
                             else{
                                 player.sendMessage(prefix+ChatColor.RED+"这个领地并不属于你");

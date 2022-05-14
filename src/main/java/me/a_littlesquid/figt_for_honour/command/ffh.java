@@ -7,6 +7,8 @@ import me.a_littlesquid.figt_for_honour.FileManager;
 import me.a_littlesquid.figt_for_honour.TownData;
 import me.a_littlesquid.figt_for_honour.guilist.townslist;
 import me.a_littlesquid.figt_for_honour.task.count;
+import me.a_littlesquid.figt_for_honour.task.meet;
+import me.a_littlesquid.figt_for_honour.utils.Prefix;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,9 +30,9 @@ import java.util.Set;
 public class ffh implements CommandExecutor {
     private Figt_for_honour plugin;
     private Residence residence = Residence.getInstance();
-    public String prefix=ChatColor.AQUA + "[" + ChatColor.GOLD + "fight_for_hornor" + ChatColor.AQUA + "]: ";
     public void getredstone(Inventory playerinvetory){
         //给玩家发标志块
+
         ItemStack itemstack = new ItemStack(Material.REDSTONE_BLOCK, 4);
         ItemMeta itemMeta=itemstack.getItemMeta();
         itemMeta.setDisplayName("城池标志块");
@@ -43,15 +45,20 @@ public class ffh implements CommandExecutor {
     }
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Prefix prefixmessage=new Prefix();
+        String prefix=prefixmessage.getprefix();
         Plugin config=me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class);
         File filedata=new File(me.a_littlesquid.figt_for_honour.Figt_for_honour.getProvidingPlugin(me.a_littlesquid.figt_for_honour.Figt_for_honour.class).getDataFolder(),"data.yml");
         FileConfiguration data= YamlConfiguration.loadConfiguration(filedata);
+        TownData townData=new TownData();
         Player player=(Player) sender;
         if (args.length == 0) {
             sender.sendMessage(ChatColor.AQUA + "——————" + ChatColor.GOLD + "欢迎使用城池争夺系统" + ChatColor.AQUA + "——————");
             sender.sendMessage(prefix + ChatColor.YELLOW + "主指令" + ChatColor.WHITE + " /ffh");
             sender.sendMessage(prefix + ChatColor.YELLOW + "重载插件" + ChatColor.WHITE + " /ffh reload ");
+            sender.sendMessage(prefix + ChatColor.YELLOW + "获取城池菜单" + ChatColor.WHITE + " /ffh gui ");
             sender.sendMessage(prefix + ChatColor.YELLOW + "创建一个城池" + ChatColor.WHITE + " /ffh create {城池名称}");
+            sender.sendMessage(prefix + ChatColor.YELLOW + "向其他城池宣战" + ChatColor.WHITE + " /ffh fight {城池名称}");
         }
         //主指令
         if(args.length ==1){
@@ -76,19 +83,18 @@ public class ffh implements CommandExecutor {
             String worldname=world.getName();
             String playername=player.getDisplayName();
             if(thenextcommand.equalsIgnoreCase("fight")) {
-                String enermy=data.getString("towns."+townname+".owner");
+                String enermy=townData.getOwner(townname);
+                String owntownn=townData.gettownname(playername);
                 Player enermyplayer= Bukkit.getPlayer(enermy);
                 if(enermyplayer.isOnline()){
-                    data.set("towns." + townname + ".fighting", "true");
+                    townData.setFighting(owntownn,true);
                     FileManager.reloadfile(data, filedata);
                     plugin = Figt_for_honour.getInstance();
-                    count task1 = new count(player,townname);
-                    task1.runTaskAsynchronously(plugin);
+                    meet meet=new meet(player,owntownn,townname,enermyplayer);
+                    meet.runTaskAsynchronously(plugin);
                 }else {
                     sender.sendMessage(prefix+ChatColor.RED+"该玩家未上线");
                 }
-
-
             }
             if (thenextcommand.equalsIgnoreCase("create")) {
                 Location location=player.getLocation();
@@ -104,10 +110,10 @@ public class ffh implements CommandExecutor {
                         getredstone(pi);
                         //获取方块
                         String theresidencename=res.getResidenceName();
-                        data.set("towns."+townname+".owner",playername);
-                        data.set("towns."+townname+".residencename",theresidencename);
-                        data.set("towns."+townname+".location.worldname",worldname);
-                        data.set("towns."+townname+".fighting","false");
+                        townData.setOwner(playername,townname);
+                        townData.setResdenience(theresidencename,townname);
+                        townData.setworldname(worldname,townname);
+                        townData.setFighting(townname,false);
                         FileManager.reloadfile(data,filedata);
                         //写入储存文件
                     }
