@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.Set;
@@ -17,18 +16,19 @@ public class TownData {
     }
     private File filedata;
     private FileConfiguration data;
-    public boolean onlyhasonetown(String playername) {
+    public boolean hastown(String playername) {
 
         ConfigurationSection configurationSection = data.getConfigurationSection("towns");
         Set<String> list = configurationSection.getKeys(false);
-            int number = 0;
+        boolean result=false;
             for (String townname : list) {
                 String owner = data.getString("towns." + townname + ".owner");
                 if (owner.equalsIgnoreCase(playername)) {
-                    number++;
+                    result=true;
+                    break;
                 }
             }
-            return number <= 1;
+            return result;
     }
     public boolean isRepetitive(String townname){
         return true;

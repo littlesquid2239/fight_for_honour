@@ -3,18 +3,26 @@ package me.a_littlesquid.figt_for_honour.task;
 import me.a_littlesquid.figt_for_honour.Figt_for_honour;
 import me.a_littlesquid.figt_for_honour.FileManager;
 import me.a_littlesquid.figt_for_honour.TownData;
+import net.milkbowl.vault.Vault;
+import net.milkbowl.vault.VaultEco;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 
+import static org.bukkit.Bukkit.getServer;
+
 public class count extends BukkitRunnable {
     private Player player;
+    private static Economy econ = null;
     private String enermy;
     private String townname;
     private Figt_for_honour plugin;
@@ -111,15 +119,21 @@ public class count extends BukkitRunnable {
         task6.runTask(plugin);
         task7.runTask(plugin);
         task8.runTask(plugin);
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        econ = rsp.getProvider();
+        double balance= econ.getBalance(player);
         if(result1<=2){
             if (result2<=2){
                 player.sendTitle(ChatColor.YELLOW+"宣战已经结束了！","你在战争中两败俱伤",10,70,20);
+
             }else{
                 player.sendTitle(ChatColor.RED+"宣战已经结束了！","你在战争中失败了",10,70,20);
+                balance=balance-100;
             }
         }else{
             if(result2<=2){
                 player.sendTitle(ChatColor.GREEN+"宣战已经结束了！","你在战争中胜利了",10,70,20);
+                balance=balance+100;
             }else {
                 player.sendTitle(ChatColor.YELLOW+"宣战已经结束了！","双方在战争中并没有实质性的伤害",10,70,20);
             }

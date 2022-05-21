@@ -99,22 +99,27 @@ public class ffh implements CommandExecutor {
                 ClaimedResidence res = this.residence.getResidenceManager().getByLoc(location);
                 if(res!=null) {
                     //检测玩家处地是否有领地
-                    String owner=res.getOwner();
-                    if(owner.equalsIgnoreCase(playername)){
+                    String owner = res.getOwner();
+                    if (owner.equalsIgnoreCase(playername)) {
+                        if (townData.hastown(playername)){
                         //玩家是领地主人
-                        Inventory pi=player.getInventory();
-                        player.sendMessage(prefix+ChatColor.WHITE +"开启创建,请将标志块全部放入领地内");
-                        player.sendTitle(ChatColor.AQUA+"开启创建","请把标志块全部放入领地内",10,70,20);
+                        Inventory pi = player.getInventory();
+                        player.sendMessage(prefix + ChatColor.WHITE + "开启创建,请将标志块全部放入领地内");
+                        player.sendTitle(ChatColor.AQUA + "开启创建", "请把标志块全部放入领地内", 10, 70, 20);
                         getredstone(pi);
                         //获取方块
-                        String theresidencename=res.getResidenceName();
-                        townData.setOwner(playername,townname);
-                        townData.setResdenience(theresidencename,townname);
-                        townData.setworldname(worldname,townname);
-                        townData.setFighting(townname,false);
-                        FileManager.reloadfile(data,filedata);
+                        String theresidencename = res.getResidenceName();
+                        townData.setOwner(playername, townname);
+                        townData.setResdenience(theresidencename, townname);
+                        townData.setworldname(worldname, townname);
+                        townData.setFighting(townname, false);
+                        FileManager.reloadfile(data, filedata);
                         //写入储存文件
-                    }
+                        }
+                            else {
+                                sender.sendMessage(prefix+ChatColor.RED+"你已经创建了一个城池");
+                            }
+                        }
                     else {
                         sender.sendMessage(prefix+ChatColor.RED+"这个领地并不属于你");
                     }

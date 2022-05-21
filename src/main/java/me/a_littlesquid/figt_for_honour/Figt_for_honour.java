@@ -4,7 +4,9 @@ import me.a_littlesquid.figt_for_honour.command.ffh;
 import me.a_littlesquid.figt_for_honour.events.breakblock;
 import me.a_littlesquid.figt_for_honour.events.guiclick;
 import me.a_littlesquid.figt_for_honour.events.putblock;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Figt_for_honour extends JavaPlugin {
@@ -26,6 +28,7 @@ public final class Figt_for_honour extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new guiclick(),this);
         getServer().getPluginManager().registerEvents(new breakblock(),this);
         //注册事件
+
         this.getLogger().info(ChatColor.AQUA+"---------------------");
         this.getLogger().info("插件名称："+ ChatColor.GOLD+"fight for honour");
         this.getLogger().info("作者："+ChatColor.GOLD+"a——littlesquid");
